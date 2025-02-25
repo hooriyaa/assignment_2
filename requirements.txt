@@ -1,0 +1,6 @@
+jupyter
+pandas
+mypy
+numpy
+pint
+openai
