@@ -7,7 +7,6 @@ import random
 import os
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 # Get API Key from environment variables
