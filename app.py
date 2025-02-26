@@ -103,3 +103,9 @@ if st.sidebar.button("📜 Show Conversion History"):
 if st.sidebar.button("🗑️ Clear History"):
     open("conversion_log.txt", "w").close()
     st.sidebar.success("✅ History cleared!")
+
+
+
+# Footer
+st.markdown("---")
+st.markdown("❤️ Created with passion by Hooriya Muhammad Fareed ❤️")
