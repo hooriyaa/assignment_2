@@ -3,4 +3,5 @@ pandas
 mypy
 numpy
 pint
-openai
+google-generativeai
+python-dotenv
