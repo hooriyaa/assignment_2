@@ -106,10 +106,6 @@ if st.button("🚀 Convert", use_container_width=True):
 # Sidebar: Toggle conversion history
 show_history = st.sidebar.checkbox("📜 Show History", key="show_history")
 
-# Unselect radio button when history is toggled
-if show_history:
-    st.session_state["quick_reply"] = None
-
 if show_history:
     st.sidebar.subheader("📜 Conversion History")
     history_df = load_conversion_history()
@@ -137,7 +133,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Quick Replies (Unselect when history is toggled)
+# Quick Replies
 quick_replies = ["What can you do?", "Tell me a fun fact!", "How does unit conversion work?", "What's the latest tech trend?"]
 selected_reply = st.sidebar.radio("💡 Quick Questions", quick_replies, index=None, key="quick_reply")
 
@@ -150,16 +146,17 @@ if final_input:  # Process chat input only if available
     with st.chat_message("user"):
         st.markdown(final_input)
 
-    # Generate AI response
-    try:
-        response = genai.GenerativeModel("gemini-1.5-pro").generate_content(final_input)
-        ai_reply = response.text
-    except Exception as e:
-        ai_reply = f"⚠️ Error: {str(e)}"
-
-    st.session_state.messages.append({"role": "assistant", "content": ai_reply})
+    # Show "Thinking..." with loading animation
     with st.chat_message("assistant"):
+        with st.spinner("🤔 Thinking..."):
+            try:
+                response = genai.GenerativeModel("gemini-1.5-pro").generate_content(final_input)
+                ai_reply = response.text
+            except Exception as e:
+                ai_reply = f"⚠️ Error: {str(e)}"
+
         st.markdown(ai_reply)
+        st.session_state.messages.append({"role": "assistant", "content": ai_reply})
 
 # Footer
 st.markdown("---")
