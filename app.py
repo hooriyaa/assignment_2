@@ -29,7 +29,6 @@ def log_conversion(value, from_unit, to_unit, result):
     with open("conversion_log.txt", "a") as log_file:
         log_file.write(f"{datetime.datetime.now()} - {value} {from_unit} -> {result} {to_unit}\n")
 
-
 # Load conversion history
 def load_conversion_history():
     try:
@@ -109,6 +108,7 @@ show_history = st.sidebar.checkbox("📜 Show History", key="show_history")
 
 if show_history:
     st.sidebar.subheader("📜 Conversion History")
+    st.session_state.quick_reply = None
     history_df = load_conversion_history()
     if not history_df.empty:
         st.sidebar.dataframe(history_df, height=250)
@@ -125,33 +125,37 @@ if st.sidebar.button("🗑️ Clear History"):
 st.header("🤖 Smart Gemini AI Chatbot")
 st.write("Ask me anything!")
 
-# Store chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Quick Replies
 quick_replies = ["What can you do?", "Tell me a fun fact!", "How does unit conversion work?", "What's the latest tech trend?"]
 selected_reply = st.sidebar.radio("💡 Quick Questions", quick_replies, index=None, key="quick_reply")
 
-# Chat input field
 user_input = st.chat_input("Type your message...")
 final_input = user_input if user_input else selected_reply
 
-if final_input:  # Process chat input only if available
+if final_input:
     st.session_state.messages.append({"role": "user", "content": final_input})
     with st.chat_message("user"):
         st.markdown(final_input)
 
-    # Show "Thinking..." with loading animation
     with st.chat_message("assistant"):
         with st.spinner("🤔 Thinking..."):
             try:
-                response = genai.GenerativeModel("gemini-1.5-pro").generate_content(final_input)
+                model = genai.GenerativeModel("gemini-1.5-pro")
+                prompt = f"""
+                You are a helpful AI assistant. Answer all types of questions accurately.
+
+                If the user asks anything related to 'who created you', 'who made you', or 'who is your developer', 
+                respond with: 'I was created by **Hooriya Muhammad Fareed**. She is a passionate web developer with expertise in **HTML, CSS, JavaScript, React.js, Next.js, and TypeScript**.'
+
+                User: {final_input}
+                """
+                response = model.generate_content(prompt)
                 ai_reply = response.text
             except Exception as e:
                 ai_reply = f"⚠️ Error: {str(e)}"
@@ -159,6 +163,5 @@ if final_input:  # Process chat input only if available
         st.markdown(ai_reply)
         st.session_state.messages.append({"role": "assistant", "content": ai_reply})
 
-# Footer
 st.markdown("---")
 st.markdown("❤️ Created by Hooriya Muhammad Fareed ❤️")
