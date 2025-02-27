@@ -13,6 +13,7 @@ load_dotenv()
 API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
+
 # Initialize unit registry
 ureg = UnitRegistry()
 
