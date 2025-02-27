@@ -29,6 +29,7 @@ def log_conversion(value, from_unit, to_unit, result):
     with open("conversion_log.txt", "a") as log_file:
         log_file.write(f"{datetime.datetime.now()} - {value} {from_unit} -> {result} {to_unit}\n")
 
+
 # Load conversion history
 def load_conversion_history():
     try:
