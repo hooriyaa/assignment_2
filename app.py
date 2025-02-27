@@ -164,6 +164,5 @@ if final_input:
         st.markdown(ai_reply)
         st.session_state.messages.append({"role": "assistant", "content": ai_reply})
 
-
 st.markdown("---")
 st.markdown("❤️ Created by Hooriya Muhammad Fareed ❤️")
